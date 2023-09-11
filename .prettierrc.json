@@ -1,7 +1,4 @@
 {
-  "bracketSpacing": false,
-  "htmlWhitespaceSensitivity": "ignore",
-  "bracketSameLine": true,
   "overrides": [
     {
       "files": "*.html",

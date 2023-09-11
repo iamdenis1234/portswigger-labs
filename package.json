@@ -5,7 +5,7 @@
   "description": "",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prettier-write": "prettier --write ./* src/"
   },
   "keywords": [],
   "author": "",
