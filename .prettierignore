@@ -1,0 +1,4 @@
+.idea/
+public/
+dist/
+package-lock.json
