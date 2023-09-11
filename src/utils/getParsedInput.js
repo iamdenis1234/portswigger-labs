@@ -71,9 +71,11 @@ function parseConcurrency(str) {
     // use PQueue validation instead of custom one
     new PQueue({ concurrency: number });
   } catch (e) {
-    throw new commander.InvalidArgumentError(
-      "Concurrency must be a number from 1 and up",
-    );
+    if (e instanceof TypeError) {
+      throw new commander.InvalidArgumentError(
+        "Concurrency must be a number from 1 and up",
+      );
+    }
   }
   return number;
 }
