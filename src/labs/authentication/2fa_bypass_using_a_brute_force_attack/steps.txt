@@ -1,0 +1,17 @@
+1. get /login
+2. extract session cookie and csrf token from response
+3. post /login with username: carlos, password: montoya, csrf and session cookie obtained in step 2(7)
+4. extract session cookie from response
+5. get /login2 with session cookie from step 4 and extract csrf from response
+6. post /login2 with csrf:<from step 5>, session:<from step 4> and  mfa-code: <i>
+  6.1. if 302 redirect, then success, display all response headers and full response body
+  6.2. if not 302 redirect, if this is the 2nd try then go to step 7, else try step 6 with i+1
+7. extract session cookie and csrf from response in step 6.2
+8. go to step 3 with session cookie and csrf from step 7
+
+
+===EXAMPLE===
+2. session=rZpjsAZAMK6Nw7keMnaPdet98nH1tqkD; csrf=fYFQXXIPpjp8EiN5lE4k9kwzBCFZEqXz
+4. session=RQsfo6gArkL5h8I7VIoQtXnC7RsitTJc
+5. csrf=tcGrD3sadOZjzHqj3sc8EEef1Za0lyYf
+7. session=s3qRumusd1yBOviGFGlhA8iWc5LcTSmA; csrf=64QjhsQesjZuY3SJk6asl6Fo4GheGBut
