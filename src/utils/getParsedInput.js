@@ -3,6 +3,7 @@ import { Command } from "commander";
 import PQueue from "p-queue";
 import { getHttpClient } from "./httpClient.js";
 
+// TODO: add verification that a link belongs to a specific lab
 export function getParsedInput(config) {
   const program = createCommand(config);
   program.parse();
@@ -62,7 +63,7 @@ function parseUrl(str) {
       "Portswigger labs are only accessible over HTTPS",
     );
   }
-  return url;
+  return url.origin + "/";
 }
 
 function parseConcurrency(str) {
