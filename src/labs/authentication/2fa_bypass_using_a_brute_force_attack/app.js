@@ -1,15 +1,17 @@
 import { getParsedInput } from "../../../utils/getParsedInput.js";
+import { pressEnterToContinue } from "../../../utils/pressEnterToContinue.js";
 import { runTasks } from "../../../utils/runTasks.js";
 
 const { url, concurrencyLimit, httpClient } = getParsedInput({
   description: "Lab: 2FA bypass using a brute-force attack",
-  // TODO: after valid input prompt with this text:
-  //  As the verification code will reset while you're running your attack,
-  //  you may need to repeat this attack several times before you succeed.
-  //  This is because the new code may be a number that your current Intruder
-  //  attack has already attempted.
   concurrency: true,
 });
+
+await pressEnterToContinue(`
+As the verification code will reset while you're running your attack,
+you may need to repeat this attack several times before you succeed.
+This is because the new code may be a number that your current attack 
+has already attempted.`);
 
 const csrfRegex = /value="(.+)"/;
 
