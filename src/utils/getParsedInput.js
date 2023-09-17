@@ -9,12 +9,11 @@ export function getParsedInput(config) {
   program.parse();
 
   const options = program.opts();
-  const httpClient = getHttpClient({ useProxy: options.proxy });
 
   return {
     url: program.processedArgs[0],
     concurrencyLimit: options.concurrency,
-    httpClient,
+    httpClient: getHttpClient({ useProxy: options.proxy }),
   };
 }
 
@@ -29,8 +28,11 @@ function createCommand(config = {}) {
       "lab url, https only (e.g. 'https://0a1000e403.web-security-academy.net')",
       parseUrl,
     )
-    .option("-p, --proxy", "use proxy from the config", false)
     .showHelpAfterError("(add --help for additional information)");
+
+  if (config.proxy) {
+    program.option("-p, --proxy", "use proxy from the config", false);
+  }
 
   if (config.concurrency) {
     program.option(

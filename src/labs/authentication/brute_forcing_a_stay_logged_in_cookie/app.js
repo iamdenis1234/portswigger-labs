@@ -6,6 +6,7 @@ import { getPasswords } from "../../../utils/config.js";
 const { url, concurrencyLimit, httpClient } = getParsedInput({
   description: "Lab: Brute-forcing a stay-logged-in cookie",
   concurrency: true,
+  proxy: true,
 });
 
 const passwords = await getPasswords();
