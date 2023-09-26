@@ -27,7 +27,7 @@ function getHttpClient(config = {}) {
   });
 
   instance.interceptors.response.use(null, (error) => {
-    console.log(`${error.constructor.name}: ${error.message}`);
+    console.log(error);
     if (error.response?.status === 504) {
       console.log("Looks like your lab time has expired");
     }
