@@ -2,7 +2,9 @@ export { handleError };
 
 function handleError(error) {
   console.log(error);
+  console.log("\n");
   handleNetworkError(error);
+  console.log();
   process.exit(1);
 }
 
