@@ -1,13 +1,15 @@
 import { getParsedInput } from "../../../utils/getParsedInput.js";
+import { runTasks } from "../../../utils/runTasks.js";
 
 const { url } = getParsedInput({
   description: "Lab: Stored XSS into HTML context with nothing encoded",
 });
 
-const blogPostPath = "post?postId=1";
-const link = url + blogPostPath;
-const payload = "<script>alert(0)</script>";
-console.log(`
+function task() {
+  const blogPostPath = "post?postId=1";
+  const link = url + blogPostPath;
+  const payload = "<script>alert(0)</script>";
+  console.log(`
 To solve the lab:
   1. Visit this url:
   "${link}"
@@ -16,3 +18,6 @@ To solve the lab:
   3. Click "Back to blog" or visit the blog post again:
   "${link}"
 `);
+}
+
+runTasks([task]);
