@@ -4,7 +4,7 @@ import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { createExploit } from "../utils/createExploit.js";
 
 const { url, httpClient } = getParsedInput({
-  description: "Lab: CSRF vulnerability with no defenses",
+  description: "Lab: CSRF where token is not tied to user session",
   proxy: true,
 });
 
