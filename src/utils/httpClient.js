@@ -17,7 +17,7 @@ function getHttpClient(config = {}) {
     rejectUnauthorized: false,
   });
 
-  return axios.create({
+  const instance = axios.create({
     httpsAgent: httpsAgent,
     proxy: config.useProxy && proxy,
     maxRedirects: 0,
@@ -25,4 +25,19 @@ function getHttpClient(config = {}) {
       return status >= 200 && status < 500;
     },
   });
+
+  instance.interceptors.response.use(null, (error) => {
+    if (error.response?.status === 504) {
+      console.log("Looks like your lab time has expired");
+    }
+    if (error.code === "ECONNREFUSED") {
+      console.log("Looks like your proxy is not working");
+    }
+    if (error.code === "ETIMEDOUT") {
+      console.log("Looks like you have set the concurrency level too high");
+    }
+    throw error;
+  });
+
+  return instance;
 }
