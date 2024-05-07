@@ -1,10 +1,12 @@
 import * as commander from "commander";
 import { Command } from "commander";
-import PQueue from "p-queue";
 import { getHttpClient } from "./httpClient.js";
 
+export { getParsedInput };
+
 // TODO: add verification that a link belongs to a specific lab
-export function getParsedInput(config) {
+// TODO: maybe rename to getParsedInputFromUser
+function getParsedInput(config) {
   const program = createCommand(config);
   program.parse();
 
@@ -70,15 +72,14 @@ function parseUrl(str) {
 
 function parseConcurrency(str) {
   let number = Number.parseInt(str, 10);
-  try {
-    // use PQueue validation instead of custom one
-    new PQueue({ concurrency: number });
-  } catch (e) {
-    if (e instanceof TypeError) {
-      throw new commander.InvalidArgumentError(
-        "Concurrency must be a number from 1 and up",
-      );
-    }
+  if (!isConcurrencyNumberValid(number)) {
+    throw new commander.InvalidArgumentError(
+      "Concurrency must be integer greater than 0",
+    );
   }
   return number;
+}
+
+function isConcurrencyNumberValid(number) {
+  return !isNaN(number) && Number.isInteger(number) && number > 0;
 }
