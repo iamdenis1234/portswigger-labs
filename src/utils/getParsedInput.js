@@ -50,7 +50,7 @@ function parseUrl(str) {
   let url;
   try {
     url = new URL(str);
-  } catch (e) {
+  } catch {
     throw new commander.InvalidArgumentError(
       "Example of a valid url - 'https://0a1000e403.web-security-academy.net'",
     );
