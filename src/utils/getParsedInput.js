@@ -14,7 +14,7 @@ function getParsedInput(config) {
 
   return {
     // TODO: labUrl more understandable
-    url: program.processedArgs[0],
+    labUrl: program.processedArgs[0],
     concurrencyLimit: options.concurrency,
     httpClient: getHttpClient({ useProxy: options.proxy }),
   };

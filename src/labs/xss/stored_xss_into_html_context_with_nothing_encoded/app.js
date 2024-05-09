@@ -1,13 +1,13 @@
 import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { runTasks } from "../../../utils/runTasks.js";
 
-const { url } = getParsedInput({
+const { labUrl } = getParsedInput({
   description: "Lab: Stored XSS into HTML context with nothing encoded",
 });
 
 function task() {
   const blogPostPath = "post?postId=1";
-  const link = url + blogPostPath;
+  const link = labUrl + blogPostPath;
   const payload = "<script>alert(0)</script>";
   console.log(`
 To solve the lab:

