@@ -1,7 +1,7 @@
 import md5 from "md5";
 import { getParsedInput } from "../../../utils/getParsedInput.js";
 import { runTasks } from "../../../utils/runTasks.js";
-import { getPasswords } from "../../../utils/config.js";
+import { getPasswords } from "../../../../config/config.js";
 import { victimsAccount } from "../../../../config/accounts.js";
 
 const { labUrl, concurrencyLimit, httpClient } = getParsedInput({
