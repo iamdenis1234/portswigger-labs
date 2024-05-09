@@ -1,10 +1,10 @@
 import md5 from "md5";
-import { getParsedInput } from "../../../utils/getParsedInput.js";
+import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { getPasswords } from "../../../../config/config.js";
 import { victimsAccount } from "../../../../config/accounts.js";
 
-const { labUrl, concurrencyLimit, httpClient } = getParsedInput({
+const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
   description: "Lab: Brute-forcing a stay-logged-in cookie",
   concurrency: true,
   proxy: true,

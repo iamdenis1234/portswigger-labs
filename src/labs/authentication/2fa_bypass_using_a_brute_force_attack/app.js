@@ -1,9 +1,9 @@
-import { getParsedInput } from "../../../utils/getParsedInput.js";
+import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { pressEnterToContinue } from "../../../utils/pressEnterToContinue.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { sleep } from "../../../utils/sleep.js";
 
-const { labUrl, concurrencyLimit, httpClient } = getParsedInput({
+const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
   description: "Lab: 2FA bypass using a brute-force attack",
   concurrency: true,
   proxy: true,

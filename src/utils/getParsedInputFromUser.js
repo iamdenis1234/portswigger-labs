@@ -2,18 +2,16 @@ import * as commander from "commander";
 import { Command } from "commander";
 import { getHttpClient } from "./httpClient.js";
 
-export { getParsedInput };
+export { getParsedInputFromUser };
 
 // TODO: add verification that a link belongs to a specific lab
-// TODO: maybe rename to getParsedInputFromUser
-function getParsedInput(config) {
+function getParsedInputFromUser(config) {
   const program = createCommand(config);
   program.parse();
 
   const options = program.opts();
 
   return {
-    // TODO: labUrl more understandable
     labUrl: program.processedArgs[0],
     concurrencyLimit: options.concurrency,
     httpClient: getHttpClient({ useProxy: options.proxy }),

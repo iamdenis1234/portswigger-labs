@@ -1,7 +1,7 @@
-import { getParsedInput } from "../../../utils/getParsedInput.js";
+import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { runTasks } from "../../../utils/runTasks.js";
 
-const { labUrl } = getParsedInput({
+const { labUrl } = getParsedInputFromUser({
   description: "Lab: Stored XSS into HTML context with nothing encoded",
 });
 

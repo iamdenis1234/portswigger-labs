@@ -1,10 +1,10 @@
 import { parse } from "node-html-parser";
 import { ExploitServer } from "../../../utils/exploitServer.js";
-import { getParsedInput } from "../../../utils/getParsedInput.js";
+import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { createExploit } from "../utils/createExploit.js";
 
-const { labUrl, httpClient } = getParsedInput({
+const { labUrl, httpClient } = getParsedInputFromUser({
   description: "Lab: CSRF where token is not tied to user session",
   proxy: true,
 });
