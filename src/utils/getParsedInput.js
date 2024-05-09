@@ -13,6 +13,7 @@ function getParsedInput(config) {
   const options = program.opts();
 
   return {
+    // TODO: labUrl more understandable
     url: program.processedArgs[0],
     concurrencyLimit: options.concurrency,
     httpClient: getHttpClient({ useProxy: options.proxy }),
@@ -67,7 +68,7 @@ function parseUrl(str) {
       "Portswigger labs are only accessible over HTTPS",
     );
   }
-  return url.origin + "/";
+  return url;
 }
 
 function parseConcurrency(str) {
