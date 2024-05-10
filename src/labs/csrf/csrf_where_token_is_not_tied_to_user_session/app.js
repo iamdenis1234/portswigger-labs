@@ -1,9 +1,9 @@
-import { parse } from "node-html-parser";
 import { ExploitServer } from "../../../utils/exploitServer.js";
 import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { Exploit } from "../utils/Exploit.js";
 import { getFileContent } from "../../../utils/getFileContent.js";
 import { runTasks } from "../../../utils/runTasks.js";
+import { extractCsrfToken } from "../../../utils/extractCsrfToken.js";
 
 const { labUrl, httpClient } = getParsedInputFromUser({
   description: "Lab: CSRF where token is not tied to user session",
@@ -37,10 +37,4 @@ async function getExploit() {
 async function getCsrfToken() {
   const { data: html } = await httpClient.get(labUrl + "login");
   return extractCsrfToken(html);
-}
-
-function extractCsrfToken(html) {
-  const root = parse(html);
-  const elem = root.querySelector(".login-form input[name='csrf']");
-  return elem.getAttribute("value");
 }

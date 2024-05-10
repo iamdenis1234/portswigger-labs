@@ -2,6 +2,7 @@ import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js
 import { pressEnterToContinue } from "../../../utils/pressEnterToContinue.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { sleep } from "../../../utils/sleep.js";
+import { extractCsrfToken } from "../../../utils/extractCsrfToken.js";
 
 const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
   description: "Lab: 2FA bypass using a brute-force attack",
@@ -69,7 +70,7 @@ async function task(index) {
 
 async function getFromLogin() {
   let response = await httpClient.get(labUrl + "login");
-  return [extractSessionCookie(response), extractCsrfToken(response)];
+  return [extractSessionCookie(response), extractCsrfToken(response.data)];
 }
 
 async function postToLogin(sessionCookie, csrfToken) {
@@ -89,7 +90,7 @@ async function getFromLogin2(sessionCookie) {
       cookie: sessionCookie,
     },
   });
-  return extractCsrfToken(response);
+  return extractCsrfToken(response.data);
 }
 
 async function postToLogin2({ sessionCookie, csrfToken, mfaCode }) {
@@ -116,9 +117,4 @@ function extractSessionCookie(response) {
 function extractSessionCookieValue(response) {
   const session = extractSessionCookie(response);
   return session.split("=")[1];
-}
-
-function extractCsrfToken(response) {
-  const csrfRegex = /value="(.+)"/;
-  return response.data.match(csrfRegex)[1];
 }
