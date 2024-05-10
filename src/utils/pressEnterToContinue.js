@@ -6,7 +6,7 @@ export { pressEnterToContinue };
 async function pressEnterToContinue(message) {
   const rl = readline.createInterface({ input, output });
   console.log(message);
-  await rl.question("\nPress Enter to continue\n");
+  await rl.question("\nPress Enter to continue");
   rl.close();
   console.log("Continuing...\n");
 }
