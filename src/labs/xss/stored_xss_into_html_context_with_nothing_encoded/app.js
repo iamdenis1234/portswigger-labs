@@ -5,6 +5,8 @@ const { labUrl } = getParsedInputFromUser({
   description: "Lab: Stored XSS into HTML context with nothing encoded",
 });
 
+runTasks([task]);
+
 function task() {
   const blogPostPath = "post?postId=1";
   const link = labUrl + blogPostPath;
@@ -19,5 +21,3 @@ To solve the lab:
   "${link}"
 `);
 }
-
-runTasks([task]);

