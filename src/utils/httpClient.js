@@ -10,7 +10,6 @@ function getHttpClient(config = {}) {
   // for performance and https support via proxy
   const httpsAgent = new https.Agent({
     // see https://nodejs.org/api/http.html#new-agentoptions for relevant explanations
-    keepAlive: true,
     maxSockets: 100,
     // to support self-signed proxy certificate
     // see https://nodejs.org/api/tls.html#tlscreateserveroptions-secureconnectionlistener for details
