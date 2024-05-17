@@ -4,8 +4,14 @@ import { getHttpClient } from "./httpClient.js";
 
 export { getParsedInputFromUser };
 
+interface Config {
+  description: string;
+  concurrency?: boolean;
+  proxy?: boolean;
+}
+
 // TODO: add verification that a link belongs to a specific lab
-function getParsedInputFromUser(config) {
+function getParsedInputFromUser(config: Config) {
   const program = createCommand(config);
   program.parse();
 
@@ -18,7 +24,7 @@ function getParsedInputFromUser(config) {
   };
 }
 
-function createCommand(config = {}) {
+function createCommand(config: Config) {
   const program = new Command();
   const description = config.description || "";
 
@@ -47,7 +53,7 @@ function createCommand(config = {}) {
   return program;
 }
 
-function parseUrl(str) {
+function parseUrl(str: string) {
   let url;
   try {
     url = new URL(str);
@@ -69,8 +75,8 @@ function parseUrl(str) {
   return url;
 }
 
-function parseConcurrency(str) {
-  let number = Number.parseInt(str, 10);
+function parseConcurrency(str: string) {
+  const number = Number.parseInt(str, 10);
   if (!isConcurrencyNumberValid(number)) {
     throw new commander.InvalidArgumentError(
       "Concurrency must be integer greater than 0",
@@ -79,6 +85,6 @@ function parseConcurrency(str) {
   return number;
 }
 
-function isConcurrencyNumberValid(number) {
+function isConcurrencyNumberValid(number: number) {
   return !isNaN(number) && Number.isInteger(number) && number > 0;
 }

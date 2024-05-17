@@ -1,10 +1,10 @@
 export { Cookie };
 
 class Cookie {
-  #name;
-  #value;
+  readonly #name: string;
+  readonly #value: string;
 
-  constructor(name, value) {
+  constructor(name: string, value: string) {
     this.#name = name;
     this.#value = value;
   }

