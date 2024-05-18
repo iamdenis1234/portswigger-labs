@@ -1,6 +1,6 @@
 import axios from "axios";
 import https from "https";
-import { getProxy } from "../../config/config.js";
+import { getProxy } from "../config/getProxy.js";
 
 export { getHttpClient };
 
