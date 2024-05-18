@@ -1,17 +1,22 @@
 import * as commander from "commander";
 import { Command } from "commander";
 import { getHttpClient } from "./httpClient.js";
+import { AxiosInstance } from "axios";
 
 export { getParsedInputFromUser };
 
-interface Config {
+type Config = {
   description: string;
   concurrency?: boolean;
   proxy?: boolean;
-}
+};
 
 // TODO: add verification that a link belongs to a specific lab
-function getParsedInputFromUser(config: Config) {
+function getParsedInputFromUser(config: Config): {
+  labUrl: URL;
+  concurrencyLimit: number;
+  httpClient: AxiosInstance;
+} {
   const program = createCommand(config);
   program.parse();
 

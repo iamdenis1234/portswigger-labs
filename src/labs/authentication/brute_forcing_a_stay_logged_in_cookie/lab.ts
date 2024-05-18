@@ -15,7 +15,7 @@ const tasks = passwords.map((password: string) => () => task(password));
 runTasks(tasks, concurrencyLimit);
 
 async function task(password: string) {
-  const resp = await httpClient.get(labUrl, {
+  const resp = await httpClient.get(labUrl.toString(), {
     headers: {
       cookie: getCookie(password),
     },
