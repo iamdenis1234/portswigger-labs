@@ -77,6 +77,7 @@ function parseUrl(str: string) {
       "Portswigger labs are only accessible over HTTPS",
     );
   }
+  url.pathname = "";
   return url;
 }
 
