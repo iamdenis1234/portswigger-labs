@@ -1,7 +1,5 @@
 # PortSwigger Labs
 
-**PortSwigger Labs** - A project showcasing my skills and knowledge in web security.
-
 **PortSwigger Labs** - Automation of solving [PortSwigger's web security labs](https://portswigger.net/web-security/all-labs).
 
 ## Automated Labs
@@ -28,6 +26,14 @@
   ([src](src/labs/xss/reflected_xss_into_html_context_with_nothing_encoded))
 * [Stored XSS into HTML context with nothing encoded](https://portswigger.net/web-security/cross-site-scripting/stored/lab-html-context-nothing-encoded)
   ([src](src/labs/xss/stored_xss_into_html_context_with_nothing_encoded))
+
+### JWT (JSON Web Token) attacks
+* [JWT authentication bypass via flawed signature verification](https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-flawed-signature-verification)
+  ([src](src/labs/jwt/jwt_authentication_bypass_via_flawed_signature_verification))
+* [JWT authentication bypass via unverified signature](https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-unverified-signature)
+  ([src](src/labs/jwt/jwt_authentication_bypass_via_unverified_signature))
+* [JWT authentication bypass via weak signing key](https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-weak-signing-key)
+  ([src](src/labs/jwt/jwt_authentication_bypass_via_weak_signing_key))
 
 More to come...
 
@@ -131,4 +137,7 @@ Login with username "carlos" and password "jessica" to solve the lab
 8. That's it! ✨ You've successfully hacked the site, and it should indicate that you've solved the lab.
 
 ![Walkthrough showcase](https://github.com/iamdenis1234/portswigger-labs/assets/39136616/183083cd-1e91-4cd9-a058-d95fd1bcee36)
+
+## Credits
+[jwt.secrets.list](config/jwt.secrets.list) is taken from [this repository](https://github.com/wallarm/jwt-secrets)
 
