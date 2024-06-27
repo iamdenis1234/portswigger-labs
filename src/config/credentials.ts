@@ -1,8 +1,8 @@
-export { myCredentials, victimsCredentials };
+export { Credentials, myCredentials, victimsCredentials };
 
 interface Credentials {
   username: string;
-  password?: string;
+  password: string;
 }
 
 const myCredentials: Credentials = {
@@ -10,4 +10,4 @@ const myCredentials: Credentials = {
   password: "peter",
 };
 
-const victimsCredentials: Credentials = { username: "carlos" };
+const victimsCredentials: Credentials = { username: "carlos", password: "" };
