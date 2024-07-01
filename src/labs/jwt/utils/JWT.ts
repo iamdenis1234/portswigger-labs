@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto";
+import { createHmac, createSign, KeyObject } from "node:crypto";
 import { toBase64Url } from "../../../utils/toBase64Url.js";
 
 export { JWT };
@@ -9,7 +9,7 @@ class JWT {
   readonly #signature: string | undefined;
 
   constructor(
-    jwt: string | { header: object; payload: object; signature?: string },
+    jwt: string | { header: object; payload: object; signature?: Buffer },
   ) {
     if (typeof jwt === "string") {
       const [header, payload, signature] = jwt.split(".");
@@ -20,7 +20,7 @@ class JWT {
       this.#header = toBase64Url(jwt.header);
       this.#payload = toBase64Url(jwt.payload);
       if (jwt.signature) {
-        this.#signature = toBase64Url(jwt.signature);
+        this.#signature = jwt.signature.toString("base64url");
       }
     }
   }
@@ -33,6 +33,13 @@ class JWT {
     const signature = createHmac("sha256", secret)
       .update(this.getUnsigned())
       .digest("base64url");
+    return new JWT([this.#header, this.#payload, signature].join("."));
+  }
+
+  signWithPrivateKey(privateKey: KeyObject) {
+    const signature = createSign("sha256")
+      .update(this.getUnsigned())
+      .sign(privateKey, "base64url");
     return new JWT([this.#header, this.#payload, signature].join("."));
   }
 
