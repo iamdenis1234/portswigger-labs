@@ -77,6 +77,7 @@ function parseUrl(str: string) {
     );
   }
   url.pathname = "";
+  url.search = "";
   return url;
 }
 
