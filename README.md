@@ -36,6 +36,8 @@
   ([src](src/labs/jwt/jwt_authentication_bypass_via_weak_signing_key))
 * [JWT authentication bypass via jwk header injection](https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-jwk-header-injection)
   ([src](src/labs/jwt/jwt_authentication_bypass_via_jwk_header_injection))
+* [JWT authentication bypass via jku header injection](https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-jku-header-injection)
+  ([src](src/labs/jwt/jwt_authentication_bypass_via_jku_header_injection))
 
 More to come...
 
