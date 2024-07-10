@@ -7,11 +7,10 @@ export { getParsedInputFromUser };
 
 type Config = {
   description: string;
-  concurrency?: boolean;
-  proxy?: boolean;
+  allowConcurrency?: boolean;
+  allowProxy?: boolean;
 };
 
-// TODO: add verification that a link belongs to a specific lab
 function getParsedInputFromUser(config: Config): {
   labUrl: URL;
   concurrencyLimit: number;
@@ -42,11 +41,11 @@ function createCommand(config: Config) {
     )
     .showHelpAfterError("(add --help for additional information)");
 
-  if (config.proxy) {
+  if (config.allowProxy) {
     program.option("-p, --proxy", "use proxy from the config", false);
   }
 
-  if (config.concurrency) {
+  if (config.allowConcurrency) {
     program.option(
       "-c, --concurrency <number>",
       "concurrency limit",

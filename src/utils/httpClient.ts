@@ -6,7 +6,6 @@ export { getHttpClient };
 
 const proxy = await getProxy();
 
-// TODO: rename file to getHttpClient
 function getHttpClient(config: { useProxy: boolean }) {
   // for performance and https support via proxy
   const httpsAgent = new https.Agent({

@@ -5,12 +5,11 @@ import { sleep } from "../../../utils/sleep.js";
 import { extractCsrfToken } from "../../../utils/extractCsrfToken.js";
 import { extractCookie } from "../../../utils/extractCookie.js";
 import { Cookie } from "../../../utils/Cookie.js";
-import { AxiosResponse } from "axios";
 
 const { labUrl, concurrencyLimit, httpClient } = getParsedInputFromUser({
   description: "Lab: 2FA bypass using a brute-force attack",
-  concurrency: true,
-  proxy: true,
+  allowConcurrency: true,
+  allowProxy: true,
 });
 
 await pressEnterToContinue(`
@@ -57,7 +56,7 @@ async function task(index: number) {
     csrfToken,
     mfaCode,
   });
-  if (isResponseSuccess(response)) {
+  if (isResponseSuccess(response.status)) {
     console.log(`${mfaCode}: success`);
     console.log(
       `To solve the lab:
@@ -117,7 +116,6 @@ function getMfaCode(index: number) {
   return index.toString().padStart(4, "0");
 }
 
-// TODO: maybe parameter should be statusCode
-function isResponseSuccess(response: AxiosResponse) {
-  return response.status === 302;
+function isResponseSuccess(statusCode: number) {
+  return statusCode === 302;
 }

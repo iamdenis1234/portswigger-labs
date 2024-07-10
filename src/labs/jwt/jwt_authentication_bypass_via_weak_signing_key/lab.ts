@@ -8,7 +8,7 @@ import { JWT } from "../utils/JWT.js";
 
 const { labUrl, httpClient } = getParsedInputFromUser({
   description: "Lab: JWT authentication bypass via weak signing key",
-  proxy: true,
+  allowProxy: true,
 });
 
 runTasks([task]);

@@ -5,7 +5,7 @@ import { generateKeyPairSync } from "node:crypto";
 
 const { labUrl } = getParsedInputFromUser({
   description: "Lab: JWT authentication bypass via jwk header injection",
-  proxy: true,
+  allowProxy: true,
 });
 
 runTasks([task]);

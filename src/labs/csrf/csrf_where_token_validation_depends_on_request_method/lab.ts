@@ -6,7 +6,7 @@ import { getFileContent } from "../../../utils/getFileContent.js";
 
 const { labUrl, httpClient } = getParsedInputFromUser({
   description: "Lab: CSRF where token validation depends on request method",
-  proxy: true,
+  allowProxy: true,
 });
 
 runTasks([task]);

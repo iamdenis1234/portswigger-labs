@@ -7,7 +7,7 @@ import { extractCsrfToken } from "../../../utils/extractCsrfToken.js";
 
 const { labUrl, httpClient } = getParsedInputFromUser({
   description: "Lab: CSRF where token is not tied to user session",
-  proxy: true,
+  allowProxy: true,
 });
 
 runTasks([task]);

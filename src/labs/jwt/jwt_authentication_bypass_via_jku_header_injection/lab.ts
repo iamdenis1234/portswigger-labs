@@ -6,7 +6,7 @@ import { ExploitServer } from "../../../utils/exploitServer.js";
 
 const { labUrl, httpClient } = getParsedInputFromUser({
   description: "Lab: JWT authentication bypass via jku header injection",
-  proxy: true,
+  allowProxy: true,
 });
 
 runTasks([task]);
