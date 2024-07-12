@@ -40,6 +40,8 @@
   ([src](src/labs/jwt/jwt_authentication_bypass_via_jku_header_injection))
 * [JWT authentication bypass via kid header path traversal](https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-kid-header-path-traversal)
   ([src](src/labs/jwt/jwt_authentication_bypass_via_kid_header_path_traversal))
+* [JWT authentication bypass via algorithm confusion](https://portswigger.net/web-security/jwt/algorithm-confusion/lab-jwt-authentication-bypass-via-algorithm-confusion)
+  ([src](src/labs/jwt/jwt_authentication_bypass_via_algorithm_confusion))
 
 More to come...
 
