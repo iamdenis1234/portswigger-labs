@@ -87,7 +87,7 @@ Use [proxy](https://en.wikipedia.org/wiki/Proxy_server) from the config file.
 
 It helps you clearly see what is happenning during the lab execution, what requests are sent and what responses are received. It's particularly useful for understanding how the lab is solved.
 
-Before using this option, ensure that you have a proxy running. Tested with [mitmproxy](https://github.com/mitmproxy/mitmproxy) (`mitmweb` in specific) and [Burp suite](https://portswigger.net/burp) built-in proxy.
+Before using this option, ensure that you have a proxy running. Tested with [mitmproxy](https://github.com/mitmproxy/mitmproxy) (`mitmweb` in specific) and [Burp suite](https://portswigger.net/burp) built-in proxy (Support invisible proxying should be enabled).
 
 > [!NOTE]
 > While it's possible to run the lab with proxy enabled and a concurrency number more than 1, there's no need for this.
