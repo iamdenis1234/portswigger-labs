@@ -42,6 +42,8 @@
   ([src](src/labs/jwt/jwt_authentication_bypass_via_kid_header_path_traversal))
 * [JWT authentication bypass via algorithm confusion](https://portswigger.net/web-security/jwt/algorithm-confusion/lab-jwt-authentication-bypass-via-algorithm-confusion)
   ([src](src/labs/jwt/jwt_authentication_bypass_via_algorithm_confusion))
+* [JWT authentication bypass via algorithm confusion with no exposed key](https://portswigger.net/web-security/jwt/algorithm-confusion/lab-jwt-authentication-bypass-via-algorithm-confusion-with-no-exposed-key)
+  ([src](src/labs/jwt/jwt_authentication_bypass_via_algorithm_confusion_with_no_exposed_key))
 
 More to come...
 
@@ -148,4 +150,6 @@ Login with username "carlos" and password "jessica" to solve the lab
 
 ## Credits
 [jwt.secrets.list](config/jwt.secrets.list) is taken from [this repository](https://github.com/wallarm/jwt-secrets)
+
+[derive_public_key.py](src/labs/jwt/jwt_authentication_bypass_via_algorithm_confusion_with_no_exposed_key/derive_public_key.py) is a modified version of [jwt_forgery.py](https://github.com/silentsignal/rsa_sign2n/blob/release/standalone/jwt_forgery.py)
 
