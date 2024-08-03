@@ -8,9 +8,7 @@ class JWT {
   readonly #payload: string;
   readonly #signature: string | undefined;
 
-  constructor(
-    jwt: string | { header: object; payload: object; signature?: Buffer },
-  ) {
+  constructor(jwt: string | { header: object; payload: object }) {
     if (typeof jwt === "string") {
       const [header, payload, signature] = jwt.split(".");
       this.#header = header;
@@ -19,9 +17,6 @@ class JWT {
     } else {
       this.#header = toBase64Url(jwt.header);
       this.#payload = toBase64Url(jwt.payload);
-      if (jwt.signature) {
-        this.#signature = jwt.signature.toString("base64url");
-      }
     }
   }
 
