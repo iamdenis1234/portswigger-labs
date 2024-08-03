@@ -51,6 +51,8 @@ More to come...
 
 ## Installation
 The project requires [Node.js](https://nodejs.org/) to be installed.
+The preferred version of Node.js is specified in the [.node-version](./.node-version) file.
+You can use [Fast Node Manager](https://github.com/Schniz/fnm) to manage your Node.js version.
 
 Install dependencies from the project's root folder:
 ```shell
